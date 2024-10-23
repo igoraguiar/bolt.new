@@ -52,3 +52,81 @@ Bolt.new supports most popular JavaScript frameworks and libraries. If it runs o
 
 **How can I add make sure my framework/project works well in bolt?**  
 We are excited to work with the JavaScript ecosystem to improve functionality in Bolt. Reach out to us via [hello@stackblitz.com](mailto:hello@stackblitz.com) to discuss how we can partner!
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- Node.js (v20.15.1)
+- pnpm (v9.4.0)
+
+## Setup
+
+1. Clone the repository (if you haven't already):
+
+```bash
+git clone https://github.com/coleam00/bolt.new-any-llm.git
+```
+
+2. Install dependencies:
+
+```bash
+pnpm install
+```
+
+3. Rename `.env.example` to .env.local and add your LLM API keys (you only have to set the ones you want to use and Ollama doesn't need an API key because it runs locally on your computer):
+
+```
+GROQ_API_KEY=XXX
+OPENAI_API_KEY=XXX
+ANTHROPIC_API_KEY=XXX
+```
+
+Optionally, you can set the debug level:
+
+```
+VITE_LOG_LEVEL=debug
+```
+
+**Important**: Never commit your `.env.local` file to version control. It's already included in .gitignore.
+
+## Adding New LLMs:
+
+To make new LLMs available to use in this version of Bolt.new, head on over to `app/utils/constants.ts` and find the constant MODEL_LIST. Each element in this array is an object that has the model ID for the name (get this from the provider's API documentation), a label for the frontend model dropdown, and the provider. 
+
+By default, Anthropic, OpenAI, Groq, and Ollama are implemented as providers, but the YouTube video for this repo covers how to extend this to work with more providers if you wish!
+
+When you add a new model to the MODEL_LIST array, it will immediately be available to use when you run the app locally or reload it. For Ollama models, make sure you have the model installed already before trying to use it here!
+
+## Available Scripts
+
+- `pnpm run dev`: Starts the development server.
+- `pnpm run build`: Builds the project.
+- `pnpm run start`: Runs the built application locally using Wrangler Pages. This script uses `bindings.sh` to set up necessary bindings so you don't have to duplicate environment variables.
+- `pnpm run preview`: Builds the project and then starts it locally, useful for testing the production build. Note, HTTP streaming currently doesn't work as expected with `wrangler pages dev`.
+- `pnpm test`: Runs the test suite using Vitest.
+- `pnpm run typecheck`: Runs TypeScript type checking.
+- `pnpm run typegen`: Generates TypeScript types using Wrangler.
+- `pnpm run deploy`: Builds the project and deploys it to Cloudflare Pages.
+
+## Development
+
+To start the development server:
+
+```bash
+pnpm run dev
+```
+
+This will start the Remix Vite development server. You will need Google Chrome Canary to run this locally! It's an easy install and a good browser for web development anyway.
+
+## Tips and Tricks
+
+Here are some tips to get the most out of Bolt.new:
+
+- **Be specific about your stack**: If you want to use specific frameworks or libraries (like Astro, Tailwind, ShadCN, or any other popular JavaScript framework), mention them in your initial prompt to ensure Bolt scaffolds the project accordingly.
+
+- **Use the enhance prompt icon**: Before sending your prompt, try clicking the 'enhance' icon to have the AI model help you refine your prompt, then edit the results before submitting.
+
+- **Scaffold the basics first, then add features**: Make sure the basic structure of your application is in place before diving into more advanced functionality. This helps Bolt understand the foundation of your project and ensure everything is wired up right before building out more advanced functionality.
+
+- **Batch simple instructions**: Save time by combining simple instructions into one message. For example, you can ask Bolt to change the color scheme, add mobile responsiveness, and restart the dev server, all in one go saving you time and reducing API credit consumption significantly.
