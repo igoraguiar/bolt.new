@@ -1,5 +1,3 @@
-// @ts-nocheck
-// Preventing TS checks with files presented in the video for a better presentation.
 import { env } from 'node:process';
 
 export function getAPIKey(cloudflareEnv: Env, provider: string) {
@@ -20,11 +18,11 @@ export function getAPIKey(cloudflareEnv: Env, provider: string) {
     case 'OpenRouter':
       return env.OPEN_ROUTER_API_KEY || cloudflareEnv.OPEN_ROUTER_API_KEY;
     case 'Deepseek':
-      return env.DEEPSEEK_API_KEY || cloudflareEnv.DEEPSEEK_API_KEY
-    case "OpenAILike":
-        return env.OPENAI_LIKE_API_KEY || cloudflareEnv.OPENAI_LIKE_API_KEY;
+      return env.DEEPSEEK_API_KEY || cloudflareEnv.DEEPSEEK_API_KEY;
+    case 'OpenAILike':
+      return env.OPENAI_LIKE_API_KEY || cloudflareEnv.OPENAI_LIKE_API_KEY;
     default:
-      return "";
+      return '';
   }
 }
 
@@ -33,6 +31,6 @@ export function getBaseURL(cloudflareEnv: Env, provider: string) {
     case 'OpenAILike':
       return env.OPENAI_LIKE_API_BASE_URL || cloudflareEnv.OPENAI_LIKE_API_BASE_URL;
     default:
-      return "";
+      return '';
   }
 }
