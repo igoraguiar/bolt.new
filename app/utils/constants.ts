@@ -1,4 +1,4 @@
-import type { ModelInfo } from './types';
+import type { ModelInfo, OllamaApiResponse, OllamaModel } from './types';
 
 export const WORK_DIR_NAME = 'project';
 export const WORK_DIR = `/home/${WORK_DIR_NAME}`;
@@ -10,6 +10,8 @@ export const DEFAULT_PROVIDER = 'Anthropic';
 const staticModels: ModelInfo[] = [
   { name: 'claude-3-5-sonnet-20240620', label: 'Claude 3.5 Sonnet', provider: 'Anthropic' },
   { name: 'gpt-4o', label: 'GPT-4o', provider: 'OpenAI' },
+  { name: 'anthropic/claude-3.5-sonnet', label: 'Anthropic: Claude 3.5 Sonnet (OpenRouter)', provider: 'OpenRouter' },
+  { name: 'anthropic/claude-3-haiku', label: 'Anthropic: Claude 3 Haiku (OpenRouter)', provider: 'OpenRouter' },
   { name: 'deepseek/deepseek-coder', label: 'Deepseek-Coder V2 236B (OpenRouter)', provider: 'OpenRouter' },
   { name: 'google/gemini-flash-1.5', label: 'Google Gemini Flash 1.5 (OpenRouter)', provider: 'OpenRouter' },
   { name: 'google/gemini-pro-1.5', label: 'Google Gemini Pro 1.5 (OpenRouter)', provider: 'OpenRouter' },
@@ -32,6 +34,15 @@ const staticModels: ModelInfo[] = [
   { name: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo', provider: 'OpenAI' },
   { name: 'deepseek-coder', label: 'Deepseek-Coder', provider: 'Deepseek'},
   { name: 'deepseek-chat', label: 'Deepseek-Chat', provider: 'Deepseek'},
+  { name: 'open-mistral-7b', label: 'Mistral 7B', provider: 'Mistral' },
+  { name: 'open-mixtral-8x7b', label: 'Mistral 8x7B', provider: 'Mistral' },
+  { name: 'open-mixtral-8x22b', label: 'Mistral 8x22B', provider: 'Mistral' },
+  { name: 'open-codestral-mamba', label: 'Codestral Mamba', provider: 'Mistral' },
+  { name: 'open-mistral-nemo', label: 'Mistral Nemo', provider: 'Mistral' },
+  { name: 'ministral-8b-latest', label: 'Mistral 8B', provider: 'Mistral' },
+  { name: 'ministral-small-latest', label: 'Mistral Small', provider: 'Mistral' },
+  { name: 'codestral-latest', label: 'Codestral', provider: 'Mistral' },
+  { name: 'ministral-large-latest', label: 'Mistral Large Latest', provider: 'Mistral' },
 ];
 
 export let MODEL_LIST: ModelInfo[] = [...staticModels];
@@ -45,9 +56,9 @@ async function getOllamaModels(): Promise<ModelInfo[]> {
         Accept: 'application/json',
       }
     }); 
-    const data = await response.json();
+    const data = await response.json() as OllamaApiResponse;
 
-    return data.models.map((model: any) => ({
+    return data.models.map((model: OllamaModel) => ({
       name: model.name,
       label: `${model.name} (${model.details.parameter_size})`,
       provider: 'Ollama',
@@ -58,7 +69,6 @@ async function getOllamaModels(): Promise<ModelInfo[]> {
 }
 
 async function getOpenAILikeModels(): Promise<ModelInfo[]> {
-
  try {
    const base_url =import.meta.env.OPENAI_LIKE_API_BASE_URL || "";
    if (!base_url) {
@@ -71,7 +81,7 @@ async function getOpenAILikeModels(): Promise<ModelInfo[]> {
        Authorization: `Bearer ${api_key}`,
      }
    });
-    const res = await response.json();
+    const res = await response.json() as any;
     return res.data.map((model: any) => ({
       name: model.id,
       label: model.id,
@@ -85,8 +95,7 @@ async function getOpenAILikeModels(): Promise<ModelInfo[]> {
 async function initializeModelList(): Promise<void> {
   const ollamaModels = await getOllamaModels();
   const openAiLikeModels = await getOpenAILikeModels();
-  console.log(openAiLikeModels);
   MODEL_LIST = [...ollamaModels,...openAiLikeModels, ...staticModels];
 }
 initializeModelList().then();
-export { getOllamaModels, initializeModelList };
+export { getOllamaModels, getOpenAILikeModels, initializeModelList };
