@@ -320,12 +320,14 @@ async function getOllamaModels(): Promise<ModelInfo[]> {
     const response = await fetch(`${baseUrl}/api/tags`);
     const data = (await response.json()) as OllamaApiResponse;
 
-    return data.models.map((model: OllamaModel) => ({
-      name: model.name,
-      label: `${model.name} (${model.details.parameter_size})`,
-      provider: 'Ollama',
-      maxTokenAllowed: 8000,
-    }));
+    return data.models
+      .map((model: OllamaModel) => ({
+        name: model.name,
+        label: `${model.name} (${model.details.parameter_size})`,
+        provider: 'Ollama',
+        maxTokenAllowed: 8000,
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name));
   } catch (e) {
     console.error('Error getting Ollama models:', e);
     return [];
@@ -348,11 +350,13 @@ async function getOpenAILikeModels(): Promise<ModelInfo[]> {
     });
     const res = (await response.json()) as any;
 
-    return res.data.map((model: any) => ({
-      name: model.id,
-      label: model.id,
-      provider: 'OpenAILike',
-    }));
+    return res.data
+      .map((model: any) => ({
+        name: model.id,
+        label: model.id,
+        provider: 'OpenAILike',
+      }))
+      .sort((a: any, b: any) => a.name.localeCompare(b.name));
   } catch (e) {
     console.error('Error getting OpenAILike models:', e);
     return [];
@@ -402,11 +406,13 @@ async function getLMStudioModels(): Promise<ModelInfo[]> {
     const response = await fetch(`${baseUrl}/v1/models`);
     const data = (await response.json()) as any;
 
-    return data.data.map((model: any) => ({
-      name: model.id,
-      label: model.id,
-      provider: 'LMStudio',
-    }));
+    return data.data
+      .map((model: any) => ({
+        name: model.id,
+        label: model.id,
+        provider: 'LMStudio',
+      }))
+      .sort((a: any, b: any) => a.name.localeCompare(b.name));
   } catch (e) {
     console.error('Error getting LMStudio models:', e);
     return [];
@@ -423,7 +429,7 @@ async function initializeModelList(): Promise<ModelInfo[]> {
       )
     ).flat(),
     ...staticModels,
-  ];
+  ].sort((a, b) => a.name.localeCompare(b.name));
   return MODEL_LIST;
 }
 
